@@ -4,7 +4,7 @@ An attempt to port Boing to Bevy
 
 # Original Pygame Zero version
 
-git@github.com:Wireframe-Magazine/Code-the-Classics.git
+https://github.com/Wireframe-Magazine/Code-the-Classics
 
 # Book
 
