@@ -105,14 +105,17 @@ fn make_visible(mut window: Query<&mut Window>, frames: Res<FrameCount>) {
     }
 }
 
-fn window_resized_event(mut events: EventReader<WindowResized>, mut window: Query<&mut Window>) {
-    for e in events.read() {
-        // When resolution is being changed
-        println!("{e:?}");
-        let height = window.single().height();
-        println!("{height:?}");
+fn window_resized_event(mut events: EventReader<WindowResized>, window: Query<&mut Window>,  mut cameras: Query<&mut OrthographicProjection, With<Camera>>) {
+    let event: Option<&WindowResized> = events.read().last();
+    if let Some(_e) = event {
+        let window_height = window.single().height();
+        let factor_x =  (window.single().width()) / (WIDTH) as f32;
+        let factor_y =  (window_height) / (HEIGHT) as f32;
+        for mut projection in cameras.iter_mut() {
+            projection.scale = 1.0/factor_x.min(factor_y);
+        }
+
     }
-    // event.width, event.height
 }
 
 // This resource tracks the game's score
