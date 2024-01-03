@@ -13,8 +13,13 @@ impl Plugin for MovementPlugin {
     }
 }
 
-fn update_position(mut query: Query<(&Velocity, &mut Transform)>, time: Res<Time>) {
+fn update_position(
+    mut query: Query<(&Velocity, &mut Transform)>,
+    time: Res<Time>,
+) {
     for (velocity, mut transform) in query.iter_mut() {
         transform.translation += velocity.value * time.delta_seconds();
+        if transform.translation.y > 160.0 { transform.translation.y = 160.0; }
+        if transform.translation.y < -160.0 { transform.translation.y = -160.0; }
     }
 }
