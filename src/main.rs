@@ -1,14 +1,15 @@
 mod bat;
-mod movement;
+mod ball;
 mod game_state;
-mod setup;
 mod menu;
+mod movement;
+mod setup;
 
 use bevy::{
     core::FrameCount,
     diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin},
     prelude::*,
-    window::{PresentMode, WindowTheme, WindowResized},
+    window::{PresentMode, WindowResized, WindowTheme},
 };
 
 use game_state::GameStatePlugin;
@@ -27,7 +28,6 @@ const MAX_AI_SPEED: f32 = 400.0;
 fn main() {
     App::new()
         .add_plugins(GameStatePlugin)
-        .add_plugins(MovementPlugin)
         .add_plugins(menu::MenuPlugin)
         .add_plugins(setup::GameSetupPlugin)
         .run();

@@ -1,4 +1,3 @@
-
 use bevy::prelude::*;
 
 use crate::game_state::GameState;
@@ -21,56 +20,37 @@ pub struct MenuPlugin;
 
 impl Plugin for MenuPlugin {
     fn build(&self, app: &mut App) {
-        app
-            .add_systems(Startup, setup)
+        app.add_systems(Startup, setup)
             .add_systems(OnEnter(GameState::Menu), spawn_menu)
             .add_systems(OnEnter(GameState::Game), despawn_menu)
-            .add_systems(
-                Update, 
-                (
-                    player_input_system,
-                ),
-            );
+            .add_systems(Update, (player_input_system,));
     }
 }
 
-fn setup (
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-) {
-    commands.insert_resource( GameSettings {
-        players: 1,
-    });
-    commands.insert_resource( MenuImage { 
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+    commands.insert_resource(GameSettings { players: 1 });
+    commands.insert_resource(MenuImage {
         img0: asset_server.load("images/menu0.png"),
         img1: asset_server.load("images/menu1.png"),
     });
 }
 
-fn spawn_menu(
-    mut commands: Commands,
-    menu_images: ResMut<MenuImage>,
-) {
+fn spawn_menu(mut commands: Commands, menu_images: ResMut<MenuImage>) {
     commands.spawn((
         SpriteBundle {
             transform: Transform {
                 translation: Vec3::new(0.0, 0.0, 2.0),
-                scale:Vec3::new(1.0, 1.0, 1.0),
+                scale: Vec3::new(1.0, 1.0, 1.0),
                 ..default()
             },
             texture: menu_images.img0.clone(),
             ..default()
         },
         Menu,
-
     ));
 }
 
-fn despawn_menu (
-    mut commands: Commands,
-    query: Query<Entity, With<Menu>>,
-)
-{
+fn despawn_menu(mut commands: Commands, query: Query<Entity, With<Menu>>) {
     for entity in query.iter() {
         commands.entity(entity).despawn();
     }
@@ -92,6 +72,6 @@ fn player_input_system(
             *texture = menu_images.img1.clone();
         } else if keyboard_input.pressed(KeyCode::Space) {
             game_state.set(GameState::Game);
-        } 
+        }
     }
 }

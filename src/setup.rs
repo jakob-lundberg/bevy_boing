@@ -1,14 +1,12 @@
-use bevy::prelude::*;
 use crate::*;
+use bevy::prelude::*;
 
 /// Plugin that does the game setup and related things
 pub struct GameSetupPlugin;
 
 impl Plugin for GameSetupPlugin {
     fn build(&self, app: &mut App) {
-        app
-
-        .add_plugins((
+        app.add_plugins((
             DefaultPlugins.set(WindowPlugin {
                 primary_window: Some(Window {
                     title: TITLE.into(),
@@ -37,30 +35,22 @@ impl Plugin for GameSetupPlugin {
             FrameTimeDiagnosticsPlugin,
         ))
         .add_systems(Startup, setup)
-        .add_systems(
-            Update, 
-            (
-                make_visible,
-                window_resized_event,
-            ),
-        );
+        .add_systems(Update, (make_visible, window_resized_event));
     }
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn(Camera2dBundle::default());
 
-    commands.spawn((
-        SpriteBundle {
-            transform: Transform {
-                translation: Vec3::new(0.0, 0.0, -1.0),
-                scale:Vec3::new(1.0, 1.0, 1.0),
-                ..default()
-            },
-            texture: asset_server.load("images/table.png"),
+    commands.spawn((SpriteBundle {
+        transform: Transform {
+            translation: Vec3::new(0.0, 0.0, -1.0),
+            scale: Vec3::new(1.0, 1.0, 1.0),
             ..default()
         },
-    ));
+        texture: asset_server.load("images/table.png"),
+        ..default()
+    },));
 }
 
 fn make_visible(mut window: Query<&mut Window>, frames: Res<FrameCount>) {
@@ -73,15 +63,18 @@ fn make_visible(mut window: Query<&mut Window>, frames: Res<FrameCount>) {
     }
 }
 
-fn window_resized_event(mut events: EventReader<WindowResized>, window: Query<&mut Window>,  mut cameras: Query<&mut OrthographicProjection, With<Camera>>) {
+fn window_resized_event(
+    mut events: EventReader<WindowResized>,
+    window: Query<&mut Window>,
+    mut cameras: Query<&mut OrthographicProjection, With<Camera>>,
+) {
     let event: Option<&WindowResized> = events.read().last();
     if let Some(_e) = event {
         let window_height = window.single().height();
-        let factor_x =  (window.single().width()) / (WIDTH) as f32;
-        let factor_y =  (window_height) / (HEIGHT) as f32;
+        let factor_x = (window.single().width()) / (WIDTH) as f32;
+        let factor_y = (window_height) / (HEIGHT) as f32;
         for mut projection in cameras.iter_mut() {
-            projection.scale = 1.0/factor_x.min(factor_y);
+            projection.scale = 1.0 / factor_x.min(factor_y);
         }
-
     }
 }
